@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories, initSearch, searchProduct, selectedCategory } from "../../app/action/productAction";
+import { getCategories, initCart, initSearch, searchProduct, selectedCategory } from "../../store/action/productAction";
 import { Container, Grid, InputAdornment, TextField } from "@mui/material";
 import { AccountCircle, Search, WorkOutlineRounded } from "@mui/icons-material";
 import { Dropdown } from "react-bootstrap";
@@ -13,6 +13,7 @@ const NavigationBar = () => {
     const dispatch = useDispatch();
     const searchResults = useSelector((state) => state.product.searchResults);
     const searchKeyword = useSelector((state) => state.product.searchKeyword);
+    const cartItems = useSelector((state) => state.product.cart);
 
     useEffect(() => {
         const debouncedSearch = debounce(() => {
@@ -25,6 +26,12 @@ const NavigationBar = () => {
 
         return debouncedSearch.cancel; // Membersihkan debounce saat komponen tidak lagi ada
     }, [dispatch, searchKeyword]);
+
+    useEffect(() => {
+        dispatch(initCart())
+    }, [dispatch])
+
+    const totalQty = cartItems.reduce((total, item) => total + item.qty, 0);
 
     const handleSearchChange = (e) => {
         const newSearchKeyword = e.target.value;
@@ -43,7 +50,7 @@ const NavigationBar = () => {
         <Container>
             <Grid container style={{ marginTop: "10px", marginBottom: "10px" }}>
                 <Grid item sm={2} style={{ marginTop: "1px" }}>
-                    <img src="BeboTech.png" alt="" style={{ marginTop: "9px" }} />
+                    <img src="/BeboTech.png" alt="" style={{ marginTop: "9px" }} />
                 </Grid>
                 <Grid item sm={6} style={{ marginTop: "1px" }}>
                     <Autocomplete
@@ -104,10 +111,12 @@ const NavigationBar = () => {
                     </Dropdown>
                 </Grid>
                 <Grid item sm={1} style={{ marginTop: "1px" }}>
-                    <div style={{ marginTop: "12px" }}>
-                        <WorkOutlineRounded />
-                        <p className="notification-badge">4</p>
-                    </div>
+                    <Link to={'/cart'} style={{textDecoration:'none', color:'black'}}>
+                        <div style={{ marginTop: "12px" }}>
+                            <WorkOutlineRounded />
+                            <p className="notification-badge">{totalQty}</p>
+                        </div>
+                    </Link>
                 </Grid>
                 <Grid item sm={1} style={{ marginTop: "1px", textAlign: "right" }}>
                     <h6 style={{ marginTop: "13px" }}>

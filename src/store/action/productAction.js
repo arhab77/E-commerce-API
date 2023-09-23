@@ -75,7 +75,7 @@ export const productDetails = (productId) => async(dispatch) => {
     }
 }
 
-export const getVariantProduct = (productId => async(dispatch) => {
+export const getVariantProduct = (productId) => async(dispatch) => {
     try {
         const response = await axios.get(`https://sistemtoko.com/public/demo/varian/${productId}`);
         dispatch({
@@ -85,4 +85,40 @@ export const getVariantProduct = (productId => async(dispatch) => {
     } catch (error) {
         console.log('error when get varian: ', error);
     }
-})
+}
+
+export const addToCart = (product, qty) => async(dispatch, getState) => {
+    try {
+        const state = getState();
+        let cartItems = [...state.product.cart];
+        const findCartItem = cartItems.find(item => item.product.product_id === product.product_id);
+        if(findCartItem) {
+            findCartItem.qty = qty
+        } else {
+            cartItems.push({
+                qty,
+                product
+            })
+        }
+
+        dispatch({
+            type: 'ADD_TO_CART',
+            payload: cartItems
+        })
+    } catch (error) {
+        console.log('error when add to cart: ', error);
+    }
+}
+
+export const initCart = () => async(dispatch) => {
+    try {
+        const cart = localStorage.getItem('cart')
+        // console.log(cart);
+        dispatch({
+            type: 'ADD_TO_CART',
+            payload: cart? JSON.parse(cart) : []
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}

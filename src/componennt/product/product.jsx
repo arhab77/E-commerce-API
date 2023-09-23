@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import '../product/product.css'
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getProduct } from "../../app/action/productAction";
+import { addToCart, getProduct } from "../../store/action/productAction";
 import { Link } from "react-router-dom";
 
 const ProductComponent = () => {
@@ -15,6 +15,10 @@ const ProductComponent = () => {
     useEffect(() => {
         dispatch(getProduct(selectedCategoryId));
     }, [dispatch, selectedCategoryId])
+
+    const handleAddToCart = (product) => {
+        addToCart(product);
+    }
 
     // console.log(product);
 
@@ -42,8 +46,8 @@ const ProductComponent = () => {
                                     <p><span style={{color:'#85888A', fontSize:'14px'}}>Stock: {item.stock}</span></p>
                                     <h5 style={{fontSize:'20px', color:'red'}}>Rp. {item.price}</h5>
                                     <Link to={`/detail/${item.id}`} style={{textDecoration:'none', color:'black'}}>
-                                        <Button variant="dark" className="button">
-                                            <WorkOutlineRounded/> Masukkan ke Keranjang
+                                        <Button variant="dark" className="button" onClick={() => handleAddToCart(item)}>
+                                            <WorkOutlineRounded/> Detail Produk
                                         </Button>
                                     </Link>
                                 </CardContent>

@@ -4,7 +4,8 @@ const initialState = {
     selectedCategory: null,
     searchKeyword: '',
     searchResults: [],
-    variant: []
+    variant: [],
+    cart: []
 }
 
 const productReducer = (state = initialState, action) => {
@@ -43,6 +44,12 @@ const productReducer = (state = initialState, action) => {
             return {
                 ...state,
                 variant: action.payload
+            }
+        case 'ADD_TO_CART':
+            localStorage.setItem('cart', JSON.stringify(action.payload))
+            return {
+                ...state,
+                cart: [...action.payload]
             }
         default:
             return state;
